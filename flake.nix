@@ -1,5 +1,5 @@
 {
-  description = "Python development environment";
+  description = "Record Heart Rates from multiple Polar H10";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
