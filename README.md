@@ -32,7 +32,7 @@ just switch the sensors on and they will be detected automatically.
 | `NNN bpm` | Current heart rate in beats per minute |
 | `INVALID` | Heart rate value outside the plausible range (< 10 or > 250 bpm) |
 | `NO CONTACT` | Sensor is not in contact with skin |
-| `LOW BAT` | Device battery is low |
+| `LOW BATTERY` | Device battery is low |
 | `LOST` | No advertisement received from this device in the last 5 seconds |
 
 ### CSV output columns
@@ -112,8 +112,9 @@ Make sure the virtual environment is active (see step 2 above), then:
 python polar_multi_hr.py
 ```
 
-Press `Ctrl+C` to stop recording. The output CSV file is kept between
-runs — new readings are appended each time.
+Press `Ctrl+C` to stop recording. The output CSV file is named
+`result_YYYYMMDD_HHMM.csv`, where the `YYYYMMDD_HHMM` part is the
+timestamp of when the recording started.
 
 ## Post-processing
 
@@ -124,11 +125,12 @@ second-by-second summary, with one column per device:
 python get_second_by_second.py result_20260425_2049.csv
 ```
 
-It reads `devices.csv` from the current directory and writes
+It requires a `devices.csv` file in the current directory and writes
 `<input>_second_by_second.csv` alongside the input file. Each row
-covers one integer second; the heart rate column for each device
-contains the latest `fast_avg_hr` sample received within that second,
-or is left empty if no sample was received.
+covers one integer second and has a `time` column (human-readable
+datetime), a `unix_epoch` column, and one column per device containing
+the latest `fast_avg_hr` sample received within that second, or left
+empty if no sample was received.
 
 ## Notes
 
