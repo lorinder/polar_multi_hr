@@ -41,6 +41,7 @@ just switch the sensors on and they will be detected automatically.
 |--------|-------------|
 | timestamp | Unix timestamp (seconds, 6 decimal places) |
 | mac | Bluetooth MAC address of the device |
+| label | Human-readable label from `devices.csv`, or empty if not configured |
 | sensor_contact | 1 if the sensor is in contact with skin, 0 otherwise |
 | frame_counter | Rolling counter (0–7) from the device advertisement |
 | fast_avg_hr | Fast-averaging heart rate (beats per minute) |
@@ -125,7 +126,7 @@ second-by-second summary, with one column per device:
 python get_second_by_second.py result_20260425_2049.csv
 ```
 
-It requires a `devices.csv` file in the current directory and writes
+It writes
 `<input>_second_by_second.csv` alongside the input file. Each row
 covers one integer second and has a `time` column (human-readable
 datetime), a `unix_epoch` column, and one column per device containing

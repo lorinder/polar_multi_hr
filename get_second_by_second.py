@@ -4,34 +4,40 @@ import csv
 import sys
 import datetime
 
-def load_devices(path: str = "devices.csv") -> list[tuple[str, str]]:
-    devices = []
-    with open(path, newline="") as f:
-        for mac, name in csv.reader(f):
-            devices.append((mac.strip(), name.strip()))
-    return devices
+Device = tuple[str, str]          # (mac, label)
+Reading = tuple[float, str, int]  # (timestamp, mac, fast_hr)
 
-def load_results(path: str) -> list[tuple[float, str, int]]:
+def load_results(path: str) -> tuple[list[Device], list[Reading]]:
+    devices_seen: dict[str, str] = {}
     rows = []
     with open(path, newline="") as f:
         for row in csv.reader(f):
-            timestamp, mac, _contact, _frame, fast_hr, _slow_hr = row
-            rows.append((float(timestamp), mac.strip(), int(fast_hr)))
-    return rows
+            timestamp, mac, label, _contact, _frame, fast_hr, _slow_hr = row
+            mac = mac.strip()
+            label = label.strip()
+            if mac not in devices_seen:
+                devices_seen[mac] = label
+            rows.append((float(timestamp), mac, int(fast_hr)))
+
+    def sort_key(item):
+        mac, label = item
+        return (0, label.lower()) if label else (1, mac)
+
+    devices = sorted(devices_seen.items(), key=sort_key)
+    return devices, rows
 
 def main():
     if len(sys.argv) != 2:
         print(f"Usage: {sys.argv[0]} <results.csv>", file=sys.stderr)
         sys.exit(1)
 
-    devices = load_devices("devices.csv")
-    macs = [mac for mac, _ in devices]
-    labels = [name for _, name in devices]
-
-    rows = load_results(sys.argv[1])
+    devices, rows = load_results(sys.argv[1])
     if not rows:
         print("No data in results file.", file=sys.stderr)
         sys.exit(1)
+
+    macs = [mac for mac, _ in devices]
+    labels = [label or mac for mac, label in devices]
 
     min_sec = int(min(ts for ts, _, _ in rows))
     max_sec = int(max(ts for ts, _, _ in rows))

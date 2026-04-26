@@ -142,7 +142,8 @@ def load_device_names(path: str = "devices.csv") -> dict[str, str]:
     return names
 
 async def main(stdscr) -> None:
-    display = Display(stdscr, load_device_names())
+    names = load_device_names()
+    display = Display(stdscr, names)
     asyncio.create_task(tick_loop(display))
     filename = time.strftime("result_%Y%m%d_%H%M.csv")
     with open(filename, "a", newline="") as csvfile:
@@ -155,6 +156,7 @@ async def main(stdscr) -> None:
                     writer.writerow([
                         f"{time.time():.6f}",
                         mac,
+                        names.get(mac, ""),
                         mfr_dec.sensor_contact,
                         mfr_dec.frame_counter,
                         mfr_dec.fast_avg_hr,
