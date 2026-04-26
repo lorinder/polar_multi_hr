@@ -22,6 +22,8 @@ just switch the sensors on and they will be detected automatically.
   status indicators for lost signal, no skin contact, and low battery
 - Appends every reading to a timestamped CSV file in the current
   directory
+- Converts raw CSV output to a tidy second-by-second summary with one
+  column per device via `get_second_by_second.py`
 
 ### Display status values
 
