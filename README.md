@@ -113,6 +113,21 @@ python polar_multi_hr.py
 Press `Ctrl+C` to stop recording. The output CSV file is kept between
 runs — new readings are appended each time.
 
+## Post-processing
+
+`get_second_by_second.py` converts a raw results CSV into a tidy
+second-by-second summary, with one column per device:
+
+```bash
+python get_second_by_second.py result_20260425_2049.csv
+```
+
+It reads `devices.csv` from the current directory and writes
+`<input>_second_by_second.csv` alongside the input file. Each row
+covers one integer second; the heart rate column for each device
+contains the latest `fast_avg_hr` sample received within that second,
+or is left empty if no sample was received.
+
 ## Notes
 
 - On Linux, Bluetooth access may require running as root or granting
